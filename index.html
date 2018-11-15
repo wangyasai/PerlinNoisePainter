@@ -1,0 +1,256 @@
+<!-- Hello, This is a simple particles emision tool that can generate different shapes through the controls.
+ I hope you like this tool,have fuuuuuun:)-->
+
+
+ <!DOCTYPE html>
+ <html>
+ <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>xxxxxxxxxxxx</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <link href="" rel="stylesheet">
+
+
+
+  <link rel="icon" href="image/1.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="image/1.ico" type="image/x-icon">
+
+  <link rel="stylesheet" type="text/css" href="fonts.css">
+  <script type="text/javascript" src="js/dat.gui.min.js"></script>
+  <script type="text/javascript" src="js/p5.min.js"></script>
+  <script type="text/javascript" src="js/gif.js"></script>
+  <script type="text/javascript" src="js/p5.dom.min.js"></script>
+
+
+  <input id="img-path" type="file" />
+
+  <style type="text/css">
+  *{
+    margin:0;
+    padding:0;
+  }
+
+  
+  #credits {
+    font-size: 12px;
+    position: absolute;
+    bottom: -25px;
+    right: 15px;
+    color: #ffffff;
+    max-width: 70%;
+    text-align: right;
+    line-height: 20px;
+  }
+
+  .social{
+    opacity: 0.7;
+  }
+  .iconlink{
+    bottom: 50px;
+    margin-right: 0px;
+  }
+  #img-path {
+    display: none;
+  }
+
+</style>
+</head>
+<body>
+
+
+ <div id="credits"> 
+  <div class = "social" style="margin-right:10px">Created by @Yasai</div>
+  <div class = "social" style="margin-right:10px; margin-bottom: -40px">©️All my products may be used in both personal and commercial projects   </div>
+  <div class ="iconlink"> 
+    <span><a class="icon-weibo" href="https://weibo.com/psaiaevegas/profile?rightmod=1&wvr=6&mod=personnumber"  target="_blank"  data-icon="&#xe906;" ></a></span>
+    <span><a class="icon-zhihu" href="https://www.zhihu.com/people/wang-ya-sai/activities"  target="_blank"  data-icon="&#xe907;"></a></span>
+    <span><a class="icon-instagram" href="http://instagram.com/yasaisai"  target="_blank"  data-icon="&#xe903;"></a></span>
+    <span><a class="icon-twitter" href="https://twitter.com/yasai_wang"  target="_blank"  data-icon="&#xe905;"></a></span>
+  </div>
+
+</div>
+
+
+<script type="text/javascript">
+
+  var type;
+  var options ={ 
+    Color1 : '#FF3054',
+    Color2 : '#4614E9', 
+    Nums : 50,
+    BigSize : 6,
+    SmallSize: 2,
+
+
+    Image_DataURL :'',
+    'Upload Image': function(){
+        // you need to create an input element in HTML, explained later
+
+        var input = document.getElementById('img-path');
+        input.addEventListener('change', function() {
+          var file = input.files[0];
+          r = new FileReader();
+          r.onload = function (){
+           gui['Image_DataURL'] = r.result;
+           p5LoadImage(r.result);
+           type='image';
+           draw();
+         }
+         r.readAsDataURL(file);
+
+         for (var i in gui.__controllers) {
+          gui.__controllers[i].updateDisplay();
+        }
+      });
+        input.click();
+      },
+
+      Random: function () { 
+
+        options.Speed = random(1,5);
+        options.Spacing = random(30,100);
+        options.Shadow = random(0,0.6);
+        options.Points = random(5,20);
+        options.Repeate = random(4,15);
+        options.Emission = random(1,10);
+        options.maxSize = random(1,20);
+        options.minSize = random(1,5);         
+        options.FullScreen = random(true,false);
+        options.Color = random( ['Circle', 'Rect','Line','Diamond','Text'] );
+
+
+        var color1 = rgbToHex(Math.floor(options.Color1[0]),Math.floor(options.Color1[1]),Math.floor(options.Color1[2]));
+        color1Control.setValue(color1);
+
+        var color2 = rgbToHex(Math.floor(options.Color2[0]),Math.floor(options.Color2[1]),Math.floor(options.Color2[2]));
+        color2Control.setValue(color2);
+
+      },
+
+
+      isPNG: false,
+
+      Save : function(){
+        saveFrames("Particles-Emission", "png", 1, 1);
+      },
+      SaveGif : function(){
+        createGif();
+      }
+    }
+
+
+//upload icon
+var GuiConfig = function() {
+    this['Image Path'] = 'graphic.png';  // default image path
+    this['Upload Image'] = function() {
+    };
+    // this['Image Path'] = 'graphic.png';  // default image path
+    this['Upload colorImage'] = function() {
+    };
+  };
+
+
+
+  var text, gui, config,colorControl,color1Control,color2Control,BigSizeControl,SmallSizeControl,graphicControl;
+  window.onload = function() {
+    gui = new dat.GUI();
+
+  //folder1
+  var folder1 = gui.addFolder('Controls');
+
+
+  color1Control = folder1.addColor(options, 'Color1');
+  color1Control.onChange(draw);
+  color1Control.listen();
+
+  color2Control = folder1.addColor(options, 'Color2');
+  color2Control.onChange(draw);
+  color2Control.listen();
+
+  NumsControl = folder1.add(options, 'Nums',10,70);
+  NumsControl.onChange(draw);
+  NumsControl.listen();
+
+  BigSizeControl = folder1.add(options, 'BigSize',6,10);
+  BigSizeControl.onChange(draw);
+  BigSizeControl.listen();
+
+  SmallSizeControl = folder1.add(options, 'SmallSize',1,4);
+  SmallSizeControl.onChange(draw);
+  SmallSizeControl.listen();
+
+  
+  var RandomControl = folder1.add(options, 'Random');
+
+  var UploadImg = folder1.add(options, 'Upload Image');
+
+
+
+  folder1.open();
+};
+
+var gif = new GIF({
+  workers: 2,
+  quality: 10,
+  workerScript:'js/gif.worker.js'
+});
+
+var canvas = document.getElementById('defaultCanvas0'),
+t, needFrames = 28, startFrame=0, delay=150,
+
+progressBar = document.querySelector('.progress-bar'),
+progressTip = document.querySelector('.save-gif-tip');
+
+function createGif(){
+
+  t = setInterval(addFrame,50); 
+}
+
+
+function addFrame(){
+  gif.addFrame(canvas,{delay:delay});
+
+  startFrame++;
+  progressBar.style.width = 100*(startFrame/needFrames)+'%';
+  if(startFrame>=needFrames){
+    finishGif();
+  }
+}
+
+function finishGif(){
+  clearInterval(t);
+  progressTip.style.display='block';
+  gif.on('finished', function(blob) {
+    //window.open(URL.createObjectURL(blob));
+    var anchor = document.createElement('a');
+    anchor.href = URL.createObjectURL(blob);
+    anchor.download ='1.gif';
+    progressTip.style.display='none';
+    progressBar.style.width =0;
+    anchor.click();
+  });
+
+  gif.render();
+}
+
+
+//rgb to hex颜色转换
+function componentToHex(c) {
+  var hex = c.toString(16);
+  return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+  return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+
+</script>
+
+<script type="text/javascript" src="js/sketch.js"></script>
+</body>
+
+</html>
+

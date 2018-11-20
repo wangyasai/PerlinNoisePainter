@@ -37,7 +37,7 @@ function p5LoadImage(dataURL){
 
 
 function preload(){
-  cover = loadImage("image/A.png");
+  cover = loadImage("image/hello.png");
 }
 
 

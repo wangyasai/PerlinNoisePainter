@@ -1,9 +1,9 @@
 <!DOCTYPE html>
- <html>
- <head>
+<html>
+<head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>test</title>
+  <title>Perlin Noise Painter</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
   <link href="" rel="stylesheet">
@@ -76,12 +76,12 @@
     Background :[10,10,10],
     Color1 : '#FF3054',
     Color2 : '#4614E9', 
-    Reset : false,
-    Nums : 50,
+    Nums : 90,
     BigSize : 6,
-    SmallSize: 2,
+    SmallSize: 1,
+    noiseScale: 2000,
     Image_DataURL :'',
-    UploadImage: function(){
+    'Upload Image': function(){
         // you need to create an input element in HTML, explained later
         var input = document.getElementById('img-path');
         input.addEventListener('change', function() {
@@ -105,9 +105,11 @@
       },
 
       Random: function () { 
-        options.maxSize = random(6,10);
-        options.minSize = random(0,4);         
-        // options.Color = random( [] );
+        options.BigSize = random(6,10);
+        options.SmallSize = random(0,2);  
+        options.Nums = random(80,95);         
+        options.Color1 = random( ['#FF3054','#4614e9'] );
+        options.Color2 = random(['#E632A5', '#580AFF','#005CFF']);
       },
 
 
@@ -129,7 +131,7 @@ var GuiConfig = function() {
 
 
 
-  var text, gui, config,bgcolorControl,colorControl,color1Control,color2Control,BigSizeControl,SmallSizeControl,graphicControl,resetControl;
+  var text, gui, config,bgcolorControl,colorControl,color1Control,color2Control,BigSizeControl,SmallSizeControl,graphicControl,noiseControl,noiseScaleControl,DistanceControl;
   window.onload = function() {
     gui = new dat.GUI();
 
@@ -148,28 +150,28 @@ var GuiConfig = function() {
   color2Control = folder1.addColor(options, 'Color2');
   color2Control.onChange(draw);
 
-
-  NumsControl = folder1.add(options, 'Nums',10,70);
+  NumsControl = folder1.add(options, 'Nums',60,95);
   NumsControl.onChange(draw);
   NumsControl.listen();
 
-  BigSizeControl = folder1.add(options, 'BigSize',6,10);
+  BigSizeControl = folder1.add(options, 'BigSize',2,10);
   BigSizeControl.onChange(draw);
   BigSizeControl.listen();
 
-  SmallSizeControl = folder1.add(options, 'SmallSize',0,4);
+  SmallSizeControl = folder1.add(options, 'SmallSize',0,3);
   SmallSizeControl.onChange(draw);
   SmallSizeControl.listen();
 
+
+  noiseScaleControl = folder1.add(options, 'noiseScale',100,5000);
+  noiseScaleControl.onChange(draw);
+  noiseScaleControl.listen();
+
+
   var RandomControl = folder1.add(options, 'Random');
 
-  var resetControl = folder1.add(options, 'Reset');
+  var UploadImg = folder1.add(options, 'Upload Image');
 
-
-
-
-  var UploadImg = folder1.add(options, 'UploadImage');
-  // UploadImg.onChange(setup);
 
   folder1.open();
 };

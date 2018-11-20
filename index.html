@@ -1,8 +1,4 @@
-<!-- Hello, This is a simple particles emision tool that can generate different shapes through the controls.
- I hope you like this tool,have fuuuuuun:)-->
-
-
- <!DOCTYPE html>
+<!DOCTYPE html>
  <html>
  <head>
   <meta charset="utf-8">
@@ -93,9 +89,11 @@
           r = new FileReader();
           r.onload = function (){
            gui['Image_DataURL'] = r.result;
+           console.log(r.result)
            p5LoadImage(r.result);
+           
            type ='image'; 
-           draw();
+           //draw();
          }
          r.readAsDataURL(file);
 
@@ -166,8 +164,12 @@ var GuiConfig = function() {
   var RandomControl = folder1.add(options, 'Random');
 
   var resetControl = folder1.add(options, 'Reset');
+
+
+
+
   var UploadImg = folder1.add(options, 'UploadImage');
-  // UploadImg.onChange(resetSketch);
+  // UploadImg.onChange(setup);
 
   folder1.open();
 };

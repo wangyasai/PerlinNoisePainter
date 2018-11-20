@@ -1,6 +1,3 @@
-
-//https://www.openprocessing.org/sketch/472966
-
 var myCanvas;
 var color1,color2,color3,color4,color5,color6;
 var cover;
@@ -31,12 +28,16 @@ var sum2  = 0;
 
 function p5LoadImage(dataURL){
   img = loadImage(dataURL);
-
+  console.log(img);
+  setTimeout(function(){
+    resetSketch();
+  },2000);
+  
 }
 
 
 function preload(){
-  cover = loadImage("image/hello.png");
+  cover = loadImage("image/A.png");
 }
 
 
@@ -63,8 +64,6 @@ function setup() {
 
   resetSketch();
 
-  var button = createButton('reset');
-  button.mousePressed(resetSketch);
 }
 
 

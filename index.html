@@ -75,8 +75,8 @@
   var options ={ 
     Background :[10,10,10],
     Color1 : '#FF3054',
-    Color2 : '#4614E9', 
-    Nums : 90,
+    Color2 : '#e9c313', 
+    Nums : 95,
     BigSize : 6,
     SmallSize: 1,
     noiseScale: 2000,
@@ -108,8 +108,9 @@
         options.BigSize = random(6,10);
         options.SmallSize = random(0,2);  
         options.Nums = random(80,95);         
-        options.Color1 = random( ['#FF3054','#4614e9'] );
-        options.Color2 = random(['#E632A5', '#580AFF','#005CFF']);
+        options.Color1 = random( ['#FF3054','#4614e9','#30ffda'] );
+        options.Color2 = random(['#E632A5', '#580AFF','#005CFF','#84e913','#f2ff30','#ffadbc']);
+        options.noiseScale =random(1000,2000);
       },
 
 
@@ -150,7 +151,7 @@ var GuiConfig = function() {
   color2Control = folder1.addColor(options, 'Color2');
   color2Control.onChange(draw);
 
-  NumsControl = folder1.add(options, 'Nums',60,95);
+  NumsControl = folder1.add(options, 'Nums',60,97);
   NumsControl.onChange(draw);
   NumsControl.listen();
 

@@ -103,6 +103,9 @@ function draw() {
 
   if(type == "image"){
     var counts = int(100- options.Nums);
+    if(counts%2==1){
+      counts=counts+1;
+    }
     for (var i = 0; i < sum2; i+=counts ) {  
       var percent = norm(i, 0, sum2);
       from = color(options.Color1);
@@ -119,6 +122,9 @@ function draw() {
     } 
   }else{
     var counts = int(100- options.Nums);
+    if(counts%2==1){
+      counts=counts+1;
+    }
     for (var i = 0; i < sum; i+=counts ) {  
       var percent = norm(i, 0, sum);
       from = color(options.Color1);
@@ -136,18 +142,18 @@ function draw() {
     }
   }
 
- smallcounts = int( map(options.Nums,60,95,50,300));
- var alpha = 255;
- for (var i = 0; i < smallcounts; i++) {
-  var percent = norm(i, 0, smallcounts);
-  from = color(options.Color1);
-  to = color(options.Color2);
-  between = lerpColor(from, to, percent);
-  smallParticles[i].move();
-  smallParticles[i].checkEdges2();
-  fill(between.levels[0],between.levels[1],between.levels[2]);
-  smallParticles[i].display(options.SmallSize);
-}
+  smallcounts = int( map(options.Nums,60,95,50,300));
+  var alpha = 255;
+  for (var i = 0; i < smallcounts; i++) {
+    var percent = norm(i, 0, smallcounts);
+    from = color(options.Color1);
+    to = color(options.Color2);
+    between = lerpColor(from, to, percent);
+    smallParticles[i].move();
+    smallParticles[i].checkEdges2();
+    fill(between.levels[0],between.levels[1],between.levels[2]);
+    smallParticles[i].display(options.SmallSize);
+  }
 }
 
 

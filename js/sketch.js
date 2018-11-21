@@ -20,6 +20,7 @@ var py2 = [];
 var smallcounts;
 var sum = 0;
 var sum2  = 0;
+var infor;
 
 function p5LoadImage(dataURL){
   img = loadImage(dataURL);
@@ -32,7 +33,7 @@ function p5LoadImage(dataURL){
 
 function preload(){
   cover = loadImage("image/hello.png");
-  loading 
+  infor = loadImage("image/infor.png");
 }
 
 
@@ -154,23 +155,41 @@ function draw() {
     fill(between.levels[0],between.levels[1],between.levels[2]);
     smallParticles[i].display(options.SmallSize);
   }
-}
 
 
+    smooth();
+    noFill();
+    stroke(180);
+    ellipse(40,30,30,30);
+    fill(180);
+    textAlign(CENTER);
+    textSize(18);
+    text("?",40,37);
 
-
-function Particle(x, y, r,img) {
-  this.loc = new p5.Vector(x, y);
-  this.vel = new p5.Vector(0, 0);
-  this.dir = new p5.Vector(0, 0);
-  this.speed = random(0.5,1);
-  this.run = function(r){
-    this.move();
-    this.checkEdges();
-    this.update(r);
+    if(mouseX > 20 && mouseX < 70 && mouseY > 20 && mouseY < 70){
+      imageMode(LEFT);
+      push();
+      scale(0.6);
+      image(infor,277,320);
+      pop();
+    }
   }
 
-  this.move = function() {
+
+
+
+  function Particle(x, y, r,img) {
+    this.loc = new p5.Vector(x, y);
+    this.vel = new p5.Vector(0, 0);
+    this.dir = new p5.Vector(0, 0);
+    this.speed = random(0.5,1);
+    this.run = function(r){
+      this.move();
+      this.checkEdges();
+      this.update(r);
+    }
+
+    this.move = function() {
       //noise 影响angle的变化，从而影响dir和loc，noise(x,y,z);
       this.angle = noise(this.loc.x/options.noiseScale, this.loc.y/options.noiseScale, frameCount/options.noiseScale)*TWO_PI;
       this.dir.x = cos(this.angle);//dir.x的变化
@@ -209,6 +228,10 @@ function Particle(x, y, r,img) {
    }  
    ellipse(this.loc.x, this.loc.y, psize, psize);
  }
+}
+
+function infor(){
+
 }
 
 

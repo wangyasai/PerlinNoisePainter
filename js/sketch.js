@@ -157,22 +157,22 @@ function draw() {
   }
 
 
-    smooth();
-    noFill();
-    stroke(180);
-    ellipse(40,30,30,30);
-    fill(180);
-    textAlign(CENTER);
-    textSize(18);
-    text("?",40,37);
+    // smooth();
+    // noFill();
+    // stroke(180);
+    // ellipse(40,30,30,30);
+    // fill(180);
+    // textAlign(CENTER);
+    // textSize(18);
+    // text("?",40,37);
 
-    if(mouseX > 20 && mouseX < 70 && mouseY > 20 && mouseY < 70){
-      imageMode(LEFT);
-      push();
-      scale(0.6);
-      image(infor,277,320);
-      pop();
-    }
+    // if(mouseX > 20 && mouseX < 70 && mouseY > 20 && mouseY < 70){
+    //   imageMode(LEFT);
+    //   push();
+    //   scale(0.6);
+    //   image(infor,277,320);
+    //   pop();
+    // }
   }
 
 

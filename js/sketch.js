@@ -241,6 +241,9 @@ function draw() {
     if(this.loc.x > w && this.loc.x < width-w && this.loc.y >h && this.loc.y <height-h ){
       this.loc.x = random(width);
       this.loc.y = random(height);
+    }else if(this.loc.x <0  || this.loc.x > width || this.loc.y <0 || this.loc.y > height){
+       this.loc.x = random(width);
+      this.loc.y = random(height);
     }
   }
 

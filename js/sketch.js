@@ -121,6 +121,8 @@ function draw() {
       bigParticles2[i].display(options.BigSize);
       pop();
     } 
+
+
   }else{
     var counts = int(100- options.Nums);
     if(counts%2==1){
@@ -142,6 +144,7 @@ function draw() {
       pop();
     }
   }
+
 
   smallcounts = int( map(options.Nums,60,95,50,300));
   var alpha = 255;
@@ -176,8 +179,6 @@ function draw() {
   }
 
 
-
-
   function Particle(x, y, r,img) {
     this.loc = new p5.Vector(x, y);
     this.vel = new p5.Vector(0, 0);
@@ -200,7 +201,7 @@ function draw() {
     }
 
     this.checkEdges = function() {    
-     if(brightness(img.pixels[int((this.loc.x+this.loc.y*img.width))*4]) <10 && dist(this.loc.x, this.loc.y, x, y ) >40 ){
+     if(brightness(img.pixels[int((this.loc.x+this.loc.y*img.width))*4]) !=100 && dist(this.loc.x, this.loc.y, x, y ) >40 ){
        this.loc.x = x+random(-5,5);
        this.loc.y = y+random(-5,5);
      }else if(brightness(img.pixels[int((this.loc.x+this.loc.y*img.width))*4]) == 100){
@@ -229,9 +230,3 @@ function draw() {
    ellipse(this.loc.x, this.loc.y, psize, psize);
  }
 }
-
-function infor(){
-
-}
-
-

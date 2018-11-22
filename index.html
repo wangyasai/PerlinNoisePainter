@@ -76,9 +76,10 @@
   var type;
   var options ={ 
     Background :[10,10,10],
+    Gradient : 'horizontal',
     Color1 : '#FF3054',
     Color2 : '#e9c313', 
-    Nums : 95,
+    Nums : 92,
     BigSize : 6,
     SmallSize: 2,
     noiseScale: 2000,
@@ -146,6 +147,10 @@ var GuiConfig = function() {
   bgcolorControl = folder1.addColor(options, 'Background');
   bgcolorControl.onChange(draw);
 
+
+  colorControl = folder1.add(options, 'Gradient', ['horizontal','vertical'] );
+  colorControl.listen();
+
   color1Control = folder1.addColor(options, 'Color1');
   color1Control.onChange(draw);
 
@@ -166,7 +171,7 @@ var GuiConfig = function() {
   SmallSizeControl.listen();
 
 
-  noiseScaleControl = folder1.add(options, 'noiseScale',100,5000);
+  noiseScaleControl = folder1.add(options, 'noiseScale',100,2000);
   noiseScaleControl.onChange(draw);
   noiseScaleControl.listen();
 

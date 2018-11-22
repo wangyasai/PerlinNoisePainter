@@ -52,9 +52,7 @@ function setup() {
   myCanvas = createCanvas(windowWidth, windowHeight);
   background(options.Background);
 
-  for(var i = 0 ; i < nums; i++){
-    smallParticles[i] = new Particle(random(width),random(height),options.SmallSize,cover);
-  }
+
 
   resetSketch();
 
@@ -67,6 +65,9 @@ function resetSketch(){
     img.loadPixels();
     sum2 = 0;
     imageMode(CENTER);
+    for(var i = 0 ; i < nums; i++){
+      smallParticles[i] = new Particle(random(width),random(height),options.SmallSize,img);
+    }
     for(var x = 0 ; x < img.width; x+=4){
       for(var y = 0; y < img.height; y+=4){
         index2 = int((y*img.width+x))*4;
@@ -82,6 +83,9 @@ function resetSketch(){
     cover.loadPixels();
     sum = 0;
     imageMode(CENTER);
+    for(var i = 0 ; i < nums; i++){
+      smallParticles[i] = new Particle(random(width),random(height),options.SmallSize,cover);
+    }
     for(var x = 0 ; x < cover.width; x+=5){
       for(var y = 0; y < cover.height; y+=5){
         index = int((y*cover.width+x))*4;
@@ -145,8 +149,13 @@ function draw() {
     }
   }
 
+  if(type =='image'){
+    mask(img);
+  }else{
+    mask(cover);
+  }
 
-  smallcounts = int( map(options.Nums,60,95,50,300));
+  smallcounts = int( map(options.Nums,60,95,50,800));
   var alpha = 255;
   for (var i = 0; i < smallcounts; i++) {
     var percent = norm(i, 0, smallcounts);
@@ -158,7 +167,6 @@ function draw() {
     fill(between.levels[0],between.levels[1],between.levels[2]);
     smallParticles[i].display(options.SmallSize);
   }
-
 
     // smooth();
     // noFill();
@@ -177,6 +185,18 @@ function draw() {
     //   pop();
     // }
   }
+
+  function mask(img){
+    fill(options.Background);
+    noStroke();
+    var h = (height-img.height)/2;
+    var w = (width -img.width)/2;
+    rect(0,0,width,h);
+    rect(0,0,w,height);
+    rect(width-w,0,w,height);
+    rect(0,height-h,width,h);
+  }
+
 
 
   function Particle(x, y, r,img) {
@@ -201,25 +221,28 @@ function draw() {
     }
 
     this.checkEdges = function() {    
-     if(brightness(img.pixels[int((this.loc.x+this.loc.y*img.width))*4]) !=100 && dist(this.loc.x, this.loc.y, x, y ) >40 ){
-       this.loc.x = x+random(-5,5);
-       this.loc.y = y+random(-5,5);
+     if((img.pixels[int((this.loc.x+this.loc.y*img.width))*4]) !=255 && dist(this.loc.x, this.loc.y, x, y ) >30 ){
+       this.loc.x = x+random(-2,2);
+       this.loc.y = y+random(-2,2);
      }else if(brightness(img.pixels[int((this.loc.x+this.loc.y*img.width))*4]) == 100){
       if(this.loc.x < 0 || this.loc.x > img.width || this.loc.y <0 || this.loc.y >img.height ){
-        this.loc.x = x+random(-5,5);
-        this.loc.y = y+random(-5,5);
+        this.loc.x = x+random(-2,2);
+        this.loc.y = y+random(-2,2);
       }
     }
   }
+  // this.mask = function(){   
 
+  // }
   this.checkEdges2 = function(){
-    if(this.loc.x < 0 || this.loc.x >width || this.loc.y<0 || this.loc.y > height && dist(this.loc.x, this.loc.y, x, y ) > 2  ){
+    var h = (height-img.height)/2;
+    var w = (width -img.width)/2;    
+
+    if(this.loc.x > w && this.loc.x < width-w && this.loc.y >h && this.loc.y <height-h ){
       this.loc.x = random(width);
       this.loc.y = random(height);
-      this.r = options.SmallSize;
     }
   }
-
 
   this.display = function(r) {
     if(r==options.BigSize){

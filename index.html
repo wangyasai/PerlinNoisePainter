@@ -80,7 +80,7 @@
     Color2 : '#e9c313', 
     Nums : 95,
     BigSize : 6,
-    SmallSize: 1,
+    SmallSize: 2,
     noiseScale: 2000,
     Image_DataURL :'',
     'Upload Image': function(){
@@ -161,7 +161,7 @@ var GuiConfig = function() {
   BigSizeControl.onChange(draw);
   BigSizeControl.listen();
 
-  SmallSizeControl = folder1.add(options, 'SmallSize',0,3);
+  SmallSizeControl = folder1.add(options, 'SmallSize',0,4);
   SmallSizeControl.onChange(draw);
   SmallSizeControl.listen();
 

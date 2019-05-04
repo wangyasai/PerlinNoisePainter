@@ -6,7 +6,7 @@ var bigParticles2 = [];
 var bigParticles2_ = [];
 var smallParticles = [];
 var s =2;
-var nums = 1000 ;
+var nums = 1000;
 var img;
 var loading;
 
@@ -17,7 +17,7 @@ var px = [];
 var py = [];
 
 var px_ = [];
-var py_ = [];
+var py_ = [];  
 
 var px2 = [];
 var py2 = [];
@@ -30,7 +30,14 @@ var sum = 0;
 var sum_ = 0;
 var sum2  = 0;
 var sum2_ = 0;
+let gp1,gp2,gp1_;
+let w, h ;
+var loc,red,green,blue,c,value;
 
+var randomColor = [];
+var color1;
+var c1 = [];
+var cc = [];
 
 function p5LoadImage(dataURL){
   img = loadImage(dataURL);
@@ -38,13 +45,13 @@ function p5LoadImage(dataURL){
   setTimeout(function(){
     resetSketch();
   },500);
+  
 }
 
 
 function preload(){
   cover = loadImage("image/hello.png");
 }
-
 
 function hexToRgb(hex) {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -58,196 +65,135 @@ function hexToRgb(hex) {
 
 
 function setup() {
-  myCanvas = createCanvas(windowWidth, windowHeight);
-  background(options.Background);
+  background(0,0,0);
+  w = windowWidth;
+  h = windowHeight;
 
+  myCanvas = createCanvas(w,h);
+
+  gp1 = createGraphics(w,h);
+  gp2 = createGraphics(w,h);
+  gp1_ = createGraphics(w,h);
+
+  pixelDensity(1);
+
+  gp1.pixelDensity(pixelDensity());
+  gp2.pixelDensity(pixelDensity());
+  gp1_.pixelDensity(pixelDensity());
+  var n = map(w,300,2000,0,170);
+
+
+  gp1.background(0);
+  gp1.fill(255);
+  gp1.stroke(255);
+  gp1.textSize(options.TextSize);
+  gp1.strokeWeight(20); 
+  gp1.textAlign(CENTER,CENTER);
+  gp1.text(options.Text,w/2, h/2);
+
+  gp1_.background(0);
+  gp1_.fill(255);
+  gp1_.stroke(255);
+  gp1_.textSize(options.TextSize);
+  gp1_.strokeWeight(120); 
+  gp1_.textAlign(CENTER,CENTER);
+  gp1_.text(options.Text,w/2, h/2);
+
+
+  gp1_.loadPixels();
+  var space = 10;
+  for(var y = 0 ; y < h; y+=space){
+    for(var x= 0; x< w; x+=space){
+      loc = (x + y * w)*4;
+      red =  gp1_.pixels[loc];
+      green =  gp1_.pixels[loc+1];
+      blue = gp1_.pixels[loc+2];
+      c = color(red, green, blue);
+      value = brightness(c);
+      if(value == 0){
+        gp2.fill(0,0,0);
+        gp2.rect(x,y,space,space);
+      }
+    }
+  }
+  gp1_.updatePixels();
   resetSketch();
 }
 
-
-
 function resetSketch(){
-  if(type == 'image'){
-    img.loadPixels();
-    sum2 = 0;
-    sum2_ = 0;
-    imageMode(CENTER);
-    for(var i = 0 ; i < nums; i++){
-      smallParticles[i] = new Particle(random(width),random(height),options.SmallSize,img);
-    }
-    //cover horizontal pixel get
-    for(var x = 0 ; x < img.width; x+=4){
-      for(var y = 0; y < img.height; y+=4){
-        index2 = int((y*img.width+x))*4;
-        if(brightness(img.pixels[index2]) == 100){  
-          px2[sum2] = x+random(-5,5);
-          py2[sum2] = y+random(-5,5);      
-          bigParticles2[sum2] = new Particle(px2[sum2],py2[sum2],options.BigSize,img);
-          sum2 ++;
-        }
-      }  
-    }
-    //cover vertical pixel get
-    for(var y = 0; y < img.height; y+=4){
-      for(var x = 0 ; x < img.width; x+=4){      
-        index2 = int((y*img.width+x))*4;
-        if(brightness(img.pixels[index2]) == 100){  
-          px2_[sum2_] = x+random(-5,5);
-          py2_[sum2_] = y+random(-5,5);      
-          bigParticles2_[sum2_] = new Particle(px2_[sum2_],py2_[sum2_],options.BigSize,img);
-          sum2_ ++;
-        }
-      }  
-    }
-  }else{
-    cover.loadPixels();
-    sum = 0;
-    sum_ = 0;
-    imageMode(CENTER);
-    for(var i = 0 ; i < nums; i++){
-      smallParticles[i] = new Particle(random(width),random(height),options.SmallSize,cover);
-    }
-    //upload image horizontal pixel get
-    for(var x = 0 ; x < cover.width; x+=5){
-      for(var y = 0; y < cover.height; y+=5){
-        index = int((y*cover.width+x))*4;
-        if(brightness(cover.pixels[index]) == 100){  
-          px[sum] = x + random(-5,5);
-          py[sum] = y + random(-5,5);       
-          bigParticles1[sum] = new Particle(px[sum],py[sum],options.BigSize,cover);
-          sum ++;
-        }
-      }  
-    }
-  //upload image vertical pixel get
-  for(var y = 0; y < cover.height; y+=5){
-    for(var x = 0 ; x < cover.width; x+=5){        
-      index = int((y*cover.width+x))*4;
-      if(brightness(cover.pixels[index]) == 100){  
-        px_[sum_] = x + random(-5,5);
-        py_[sum_] = y + random(-5,5);       
-        bigParticles1_[sum_] = new Particle(px_[sum_],py_[sum_],options.BigSize,cover);
-        sum_ ++;
+  gp1.loadPixels();
+  sum2 = 0;
+  imageMode(CENTER);
+  for(var i = 0 ; i < nums; i++){
+
+    smallParticles[i] = new Particle(random(width),random(height),options.SmallSize,gp1);
+  }
+
+  for(var x = 0 ; x < w; x+=4){
+    for(var y = 0; y < h; y+=4){
+      index2 = int((y*w+x))*4;
+      if(brightness(gp1.pixels[index2]) == 100){  
+        px2[sum2] = x;
+        py2[sum2] = y;      
+        bigParticles1[sum2] = new Particle(px2[sum2]+random(-5,5),py2[sum2]+random(-5,5),options.BigSize +random(10),gp1);
+        randomColor[sum2] = random(0,1);
+        sum2 ++;
       }
     }  
   }
-}
+  gp1.updatePixels();
 }
 
 
 
 function draw() {
-  background(options.Background[0],options.Background[1],options.Background[2], 10);
-
-  if(type == "image"){
-    var counts = int(100- options.Nums);
-
-    if(counts%2==1){
-      counts=counts+1;
+  background(0,0,0, 20);
+  var counts = int(30 - int(options.Nums)*3);
+  for (var i = 0; i < sum2; i+=counts) { 
+    if(randomColor[i]>0.55){
+      fill(options.Color1);
+    }else if(randomColor[i]<=0.55 && randomColor[i]>=0.2){
+      fill(options.Color2);
     }
-
-    for (var i = 0; i < sum2; i+=counts ) { 
-      if(options.Gradient == 'horizontal') {
-        var percent = norm(i, 0, sum2);  
-        from = color(options.Color1);
-        to = color(options.Color2);
-        between = lerpColor(from, to, percent);
-        fill(between);
-        noStroke();
-        push();
-        translate(width/2-img.width/2,height/2-img.height/2); 
-        bigParticles2[i].move();
-        bigParticles2[i].checkEdges();
-        bigParticles2[i].display(options.BigSize);
-        pop();
-      }else{
-        var percent = norm(i, 0, sum2);
-        from = color(options.Color1);
-        to = color(options.Color2);
-        between = lerpColor(from, to, percent);
-        fill(between);
-        noStroke();
-        push();
-        translate(width/2-img.width/2,height/2-img.height/2); 
-        bigParticles2_[i].move();
-        bigParticles2_[i].checkEdges();
-        bigParticles2_[i].display(options.BigSize);
-        pop();
-      }
-    } 
-  }
-  else{
-    var counts = int(100- options.Nums);
-    if(counts%2==1){
-      counts=counts+1;
-    }
-    
-    if(options.Gradient == 'horizontal') {
-      for (var i = 0; i < sum; i+=counts ) { 
-        var percent = norm(i, 0, sum);  
-        from = color(options.Color1);
-        to = color(options.Color2);
-        between = lerpColor(from, to, percent);
-        fill(between);
-        noStroke();
-        push();
-        translate(width/2-cover.width/2,height/2-cover.height/2); 
-        bigParticles1[i].move();
-        bigParticles1[i].checkEdges();
-        bigParticles1[i].display(options.BigSize);
-        pop();
-      }
-    }
-
     else{
-      for (var i = 0; i < sum_; i+=counts ) { 
-        var percent = norm(i, 0, sum_);
-        from = color(options.Color1);
-        to = color(options.Color2);
-        between = lerpColor(from, to, percent);
-        fill(between);
-        noStroke();
-        push();
-        translate(width/2-cover.width/2,height/2-cover.height/2); 
-        bigParticles1_[i].move();
-        bigParticles1_[i].checkEdges();
-        bigParticles1_[i].display(options.BigSize);
-        pop();
-      }
+      fill(options.Color3);
     }
+
+    noStroke(0);
+    bigParticles1[i].move();
+    bigParticles1[i].checkEdges();
+    bigParticles1[i].display(options.BigSize);
+
   }
 
-  if(type =='image'){
-    mask(img);
-  }else{
-    mask(cover);
-  }
+  mask();
 
-  smallcounts = int( map(options.Nums,60,95,50,800));
-  var alpha = 255;
-  for (var i = 0; i < smallcounts; i++) {
-    var percent = norm(i, 0, smallcounts);
-    from = color(options.Color1);
-    to = color(options.Color2);
-    between = lerpColor(from, to, percent);
+  for (var i = 0; i < 300; i++) {
+    if(randomColor[i]>0.55){
+      fill(options.Color1);
+    }else if(randomColor[i]<=0.55 && randomColor[i]>=0.2){
+      fill(options.Color2);
+    }
+    else{
+      fill(options.Color3);
+    }
     smallParticles[i].move();
     smallParticles[i].checkEdges2();
-    fill(between.levels[0],between.levels[1],between.levels[2]);
     smallParticles[i].display(options.SmallSize);
   }
+
+
 }
 
 
-function mask(img){
-  fill(options.Background);
-  noStroke();
-  var h = (height-img.height)/2;
-  var w = (width -img.width)/2;
-  rect(0,0,width,h);
-  rect(0,0,w,height);
-  rect(width-w,0,w,height);
-  rect(0,height-h,width,h);
+function mask(){
+  push();
+  translate(w/2,h/2);
+  image(gp2,0,0);
+  pop();
 }
+
+
 
 
 
@@ -273,11 +219,11 @@ function Particle(x, y, r,img) {
     }
 
     this.checkEdges = function() {    
-     if((img.pixels[int((this.loc.x+this.loc.y*img.width))*4]) !=255 && dist(this.loc.x, this.loc.y, x, y ) >30 ){
+     if((gp1.pixels[int((this.loc.x+this.loc.y*gp1.width))*4]) !=255 && dist(this.loc.x, this.loc.y, x, y ) > 40 ){
        this.loc.x = x+random(-2,2);
        this.loc.y = y+random(-2,2);
-     }else if(brightness(img.pixels[int((this.loc.x+this.loc.y*img.width))*4]) == 100){
-      if(this.loc.x < 0 || this.loc.x > img.width || this.loc.y <0 || this.loc.y >img.height ){
+     }else if(brightness(gp1.pixels[int((this.loc.x+this.loc.y*gp1.width))*4]) == 100){
+      if(this.loc.x < 0 || this.loc.x > gp1.width || this.loc.y <0 || this.loc.y >gp1.height ){
         this.loc.x = x+random(-2,2);
         this.loc.y = y+random(-2,2);
       }
@@ -286,9 +232,6 @@ function Particle(x, y, r,img) {
 
 
   this.checkEdges2 = function(){
-    var h = (height-img.height)/2;
-    var w = (width -img.width)/2;    
-
     if(this.loc.x > w && this.loc.x < width-w && this.loc.y >h && this.loc.y <height-h ){
       this.loc.x = random(width);
       this.loc.y = random(height);
@@ -303,8 +246,8 @@ function Particle(x, y, r,img) {
   if(r==options.BigSize){
     var psize = map(dist(this.loc.x, this.loc.y, x, y ),0,40,r/1.5,r); 
   }else{
-   var psize = r;
- }  
- ellipse(this.loc.x, this.loc.y, psize, psize);
+    var psize = r;
+  }  
+  ellipse(this.loc.x, this.loc.y, psize, psize);
 }
 }

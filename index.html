@@ -18,66 +18,64 @@
   <script type="text/javascript" src="js/p5.min.js"></script>
   <script type="text/javascript" src="js/p5.dom.js"></script>
   <script type="text/javascript" src="js/p5.dom.min.js"></script>
-
+  <script type="text/javascript" src="js/jquery.js"></script>
 
   <input id="img-path" type="file" />
 
   <style type="text/css">
-  *{
-    margin:0;
-    padding:0;
-  }
+    *{
+      margin:0;
+      padding:0;
+    }
 
-  
-  #credits {
-    font-size: 12px;
-    position: absolute;
-    bottom: -25px;
-    right: 15px;
-    color: #ffffff;
-    max-width: 70%;
-    text-align: right;
-    line-height: 20px;
-  }
+
+    #credits {
+      font-size: 12px;
+      position: absolute;
+      bottom: -25px;
+      right: 15px;
+      color: #ffffff;
+      max-width: 70%;
+      text-align: right;
+      line-height: 20px;
+    }
     .logo {
-    font-size: 12px;
-    position: absolute;
-    bottom: 80px;
-    left: 25px;
-    color: #ffffff;
-    max-width: 70%;
-    line-height: 20px;
-    opacity: 0.7;
-  }
-  .social{
-    opacity: 0.7;
-  }
-  .iconlink{
-    bottom: 50px;
-    margin-right: 0px;
-  }
-  #img-path {
-    display: none;
-  }
+      font-size: 12px;
+      position: absolute;
+      bottom: 80px;
+      left: 25px;
+      color: #ffffff;
+      max-width: 70%;
+      line-height: 20px;
+      opacity: 0.7;
+    }
+    .social{
+      opacity: 0.7;
+    }
+    .iconlink{
+      bottom: 50px;
+      margin-right: 0px;
+    }
+    #img-path {
+      display: none;
+    }
 
-</style>
+  </style>
   <script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?44f8fa2f0b239ea3093628142486b48a";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?44f8fa2f0b239ea3093628142486b48a";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
   
 </head>
 <body>
 
 
  <div id="credits"> 
-  <div class = "social" style="margin-right:10px"><Strong>About Image</Strong></div>
-  <div class = "social" style="margin-right:10px; margin-bottom: 0px">Upload a black and white image, it will display the particles effect in the white (#FFFFFF) part</div>
   <div class = "social" style="margin-right:10px">Created by @Yasai</div>
   <div class = "social" style="margin-right:10px; margin-bottom: -40px">©️All my products may be used in both personal and commercial projects   </div>
   <div class ="iconlink"> 
@@ -94,48 +92,38 @@ var _hmt = _hmt || [];
 
   var type;
   var options ={ 
-    Background :[10,10,10],
-    Gradient : 'horizontal',
-    Color1 : '#FF3054',
-    Color2 : '#e9c313', 
-    Nums : 92,
-    BigSize : 6,
-    SmallSize: 2,
-    noiseScale: 2000,
+    Color1 : '#00c2ff',
+    Color2 : '#094293', 
+    Color3 : '#eefdff', 
+    Nums : 5,
+    BigSize : 8,
+    SmallSize: 3,
+    noiseScale: 1000,
     Image_DataURL :'',
-    'Upload Image': function(){
-        // you need to create an input element in HTML, explained later
-        var input = document.getElementById('img-path');
-        input.addEventListener('change', function() {
-          var file = input.files[0];
-          r = new FileReader();
-          r.onload = function (){
-           gui['Image_DataURL'] = r.result;
-           console.log(r.result)
-           p5LoadImage(r.result);
+    Text : "STAR",
+    TextSize: 400,
+    // 'Upload Image': function(){
+    //     // you need to create an input element in HTML, explained later
+    //     var input = document.getElementById('img-path');
+    //     input.addEventListener('change', function() {
+    //       var file = input.files[0];
+    //       r = new FileReader();
+    //       r.onload = function (){
+    //        gui['Image_DataURL'] = r.result;
+    //        console.log(r.result)
+    //        p5LoadImage(r.result);
            
-           type ='image'; 
-           //draw();
-         }
-         r.readAsDataURL(file);
+    //        type ='image'; 
+    //        //draw();
+    //      }
+    //      r.readAsDataURL(file);
 
-         for (var i in gui.__controllers) {
-          gui.__controllers[i].updateDisplay();
-        }
-      });
-        input.click();       
-      },
-
-      Random: function () { 
-        options.BigSize = random(6,10);
-        options.SmallSize = random(0,2);  
-        options.Nums = random(80,95);         
-        options.Color1 = random( ['#FF3054','#4614e9','#30ffda'] );
-        options.Color2 = random(['#E632A5', '#580AFF','#005CFF','#84e913','#f2ff30','#ffadbc']);
-        options.noiseScale =random(1000,2000);
-      },
-
-
+    //      for (var i in gui.__controllers) {
+    //       gui.__controllers[i].updateDisplay();
+    //     }
+    //   });
+    //     input.click();       
+    //   },
       isPNG: false,
 
       Save : function(){
@@ -152,9 +140,9 @@ var GuiConfig = function() {
   };
 
 
+  var f;
 
-
-  var text, gui, config,bgcolorControl,colorControl,color1Control,color2Control,BigSizeControl,SmallSizeControl,graphicControl,noiseControl,noiseScaleControl,DistanceControl;
+  var text, gui, config,bgcolorControl,colorControl,color1Control,color2Control,color3Control,BigSizeControl,SmallSizeControl,graphicControl,noiseControl,noiseScaleControl,DistanceControl,textControl;
   window.onload = function() {
     gui = new dat.GUI();
 
@@ -163,13 +151,6 @@ var GuiConfig = function() {
   var folder1 = gui.addFolder('Controls');
 
 
-  bgcolorControl = folder1.addColor(options, 'Background');
-  bgcolorControl.onChange(draw);
-
-
-  colorControl = folder1.add(options, 'Gradient', ['horizontal','vertical'] );
-  colorControl.listen();
-
   color1Control = folder1.addColor(options, 'Color1');
   color1Control.onChange(draw);
 
@@ -177,11 +158,44 @@ var GuiConfig = function() {
   color2Control = folder1.addColor(options, 'Color2');
   color2Control.onChange(draw);
 
-  NumsControl = folder1.add(options, 'Nums',60,97);
+  color3Control = folder1.addColor(options, 'Color3');
+  color3Control.onChange(draw);
+
+
+  textControl = folder1.add(options, 'Text'); 
+  
+  var s ;
+  f = frameCount;
+
+
+
+  textControl.onChange(function(){
+    s = frameCount-f;
+    print(s);
+    if(s > 200){
+      setup();
+    }else{
+      fill(0);
+      rect(0,0,window.innerWidth,window.innerHeight);
+      fill(255);
+      textSize(20);
+      textAlign(CENTER);
+      text("loading……",window.innerWidth/2,window.innerHeight/2);
+    }
+  });
+
+
+  TextSizeControl = folder1.add(options, 'TextSize',300,600);
+  TextSizeControl.onChange(function(){
+    setup();
+    
+  });
+
+  NumsControl = folder1.add(options, 'Nums',1,10);
   NumsControl.onChange(draw);
   NumsControl.listen();
 
-  BigSizeControl = folder1.add(options, 'BigSize',2,10);
+  BigSizeControl = folder1.add(options, 'BigSize',2,20);
   BigSizeControl.onChange(draw);
   BigSizeControl.listen();
 
@@ -194,11 +208,7 @@ var GuiConfig = function() {
   noiseScaleControl.onChange(draw);
   noiseScaleControl.listen();
 
-
-  var RandomControl = folder1.add(options, 'Random');
-
-  var UploadImg = folder1.add(options, 'Upload Image');
-
+  // var UploadImg = folder1.add(options, 'Upload Image');
 
   folder1.open();
 };
@@ -214,9 +224,12 @@ function rgbToHex(r, g, b) {
 }
 
 
+
+
 </script>
 
 <script type="text/javascript" src="js/sketch.js"></script>
+
 </body>
 
 </html>

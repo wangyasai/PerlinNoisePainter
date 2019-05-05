@@ -191,22 +191,18 @@ var GuiConfig = function() {
     
   });
 
-  NumsControl = folder1.add(options, 'Nums',1,10);
+  NumsControl = folder1.add(options, 'Nums',1,9);
   NumsControl.onChange(draw);
-  NumsControl.listen();
 
   BigSizeControl = folder1.add(options, 'BigSize',2,20);
   BigSizeControl.onChange(draw);
-  BigSizeControl.listen();
 
   SmallSizeControl = folder1.add(options, 'SmallSize',0,4);
   SmallSizeControl.onChange(draw);
-  SmallSizeControl.listen();
 
 
   noiseScaleControl = folder1.add(options, 'noiseScale',100,2000);
   noiseScaleControl.onChange(draw);
-  noiseScaleControl.listen();
 
   // var UploadImg = folder1.add(options, 'Upload Image');
 

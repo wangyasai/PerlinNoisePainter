@@ -13,7 +13,7 @@ var loading;
 var index;
 var index2;
 
-var px = [];
+var px = []; 
 var py = [];
 
 var px_ = [];
@@ -38,6 +38,7 @@ var randomColor = [];
 var color1;
 var c1 = [];
 var cc = [];
+var bg;
 
 function p5LoadImage(dataURL){
   img = loadImage(dataURL);
@@ -97,6 +98,8 @@ function setup() {
 
 
   gp1_.loadPixels();
+
+  bg = hexToRgb(options.BgColor);
   var space = 10;
   for(var y = 0 ; y < h; y+=space){
     for(var x= 0; x< w; x+=space){
@@ -107,7 +110,8 @@ function setup() {
       c = color(red, green, blue);
       value = brightness(c);
       if(value == 0){
-        gp2.fill(0,0,0);
+        gp2.fill(bg.r,bg.g,bg.b);
+        gp2.noStroke();
         gp2.rect(x,y,space,space);
       }
     }
@@ -125,8 +129,9 @@ function resetSketch(){
     smallParticles[i] = new Particle(random(width),random(height),options.SmallSize,gp1);
   }
 
-  for(var x = 0 ; x < w; x+=4){
-    for(var y = 0; y < h; y+=4){
+
+  for(var y = 0; y < h; y+=4){
+    for(var x = 0 ; x < w; x+=4){
       index2 = int((y*w+x))*4;
       if(brightness(gp1.pixels[index2]) == 100){  
         px2[sum2] = x;
@@ -143,17 +148,34 @@ function resetSketch(){
 
 
 function draw() {
-  background(0,0,0, 20);
+
+  background(bg.r,bg.g,bg.b, 30);
   var counts = int(30 - int(options.Nums)*3);
   for (var i = 0; i < sum2; i+=counts) { 
-    if(randomColor[i]>0.55){
-      fill(options.Color1);
-    }else if(randomColor[i]<=0.55 && randomColor[i]>=0.2){
-      fill(options.Color2);
+    if(options.ColorMode == 'Random'){
+      if(randomColor[i]>0.55){
+        fill(options.Color1);
+      }else if(randomColor[i]<=0.55 && randomColor[i]>=0.2){
+        fill(options.Color2);
+      }else{
+        fill(options.Color3);
+      }
+    }else{
+      if(i<sum2/2){
+        var percent = norm(i,0,sum2/2);
+        var from = color(options.Color1);
+        var to = color(options.Color2);
+        var between = lerpColor(from, to, percent);
+      }else{
+        var percent = norm(i,sum2/2,sum2);
+        var from = color(options.Color2);
+        var to = color(options.Color3);
+        var between = lerpColor(from, to, percent);
+      }
+
+      fill(between);
     }
-    else{
-      fill(options.Color3);
-    }
+
 
     noStroke(0);
     bigParticles1[i].move();

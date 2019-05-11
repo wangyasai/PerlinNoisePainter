@@ -92,9 +92,12 @@
 
   var type;
   var options ={ 
+    BgColor : '#0a0a0a',
+    ColorMode: 'Random',
     Color1 : '#00c2ff',
     Color2 : '#094293', 
     Color3 : '#eefdff', 
+
     Nums : 5,
     BigSize : 8,
     SmallSize: 3,
@@ -112,7 +115,7 @@
     //        gui['Image_DataURL'] = r.result;
     //        console.log(r.result)
     //        p5LoadImage(r.result);
-           
+
     //        type ='image'; 
     //        //draw();
     //      }
@@ -124,12 +127,13 @@
     //   });
     //     input.click();       
     //   },
-      isPNG: false,
+    isPNG: false,
 
-      Save : function(){
-        saveFrames("image", "png", 1, 1);
-      },
-    }
+
+    Save : function(){
+      saveFrames("image", "png", 1, 1);
+    },
+  }
 
 
 //upload image
@@ -142,14 +146,19 @@ var GuiConfig = function() {
 
   var f;
 
-  var text, gui, config,bgcolorControl,colorControl,color1Control,color2Control,color3Control,BigSizeControl,SmallSizeControl,graphicControl,noiseControl,noiseScaleControl,DistanceControl,textControl;
+  var text, gui, config,bgcolorControl,colorControl,color1Control,color2Control,color3Control,BigSizeControl,SmallSizeControl,graphicControl,noiseControl,noiseScaleControl,DistanceControl,textControl, colorModeControl;
   window.onload = function() {
     gui = new dat.GUI();
 
 
   //folder1
   var folder1 = gui.addFolder('Controls');
+  
+  bgcolorControl = folder1.addColor(options, 'BgColor');
+  bgcolorControl.onChange(setup);
 
+  colorModeControl = folder1.add(options, 'ColorMode',['Random','Gradient']);
+ colorModeControl.onChange(draw);
 
   color1Control = folder1.addColor(options, 'Color1');
   color1Control.onChange(draw);
@@ -205,7 +214,7 @@ var GuiConfig = function() {
   noiseScaleControl.onChange(draw);
 
   // var UploadImg = folder1.add(options, 'Upload Image');
-    var SaveControl = folder1.add(options, 'Save');
+  var SaveControl = folder1.add(options, 'Save');
   folder1.open();
 };
 

@@ -8,8 +8,6 @@
   <meta name="keywords" content="">
   <link href="" rel="stylesheet">
 
-
-
   <link rel="icon" href="image/1.ico" type="image/x-icon">
   <link rel="shortcut icon" href="image/1.ico" type="image/x-icon">
 
@@ -23,54 +21,54 @@
   <input id="img-path" type="file" />
 
   <style type="text/css">
-    *{
-      margin:0;
-      padding:0;
-    }
+  *{
+    margin:0;
+    padding:0;
+  }
 
 
-    #credits {
-      font-size: 12px;
-      position: absolute;
-      bottom: -25px;
-      right: 15px;
-      color: #ffffff;
-      max-width: 70%;
-      text-align: right;
-      line-height: 20px;
-    }
-    .logo {
-      font-size: 12px;
-      position: absolute;
-      bottom: 80px;
-      left: 25px;
-      color: #ffffff;
-      max-width: 70%;
-      line-height: 20px;
-      opacity: 0.7;
-    }
-    .social{
-      opacity: 0.7;
-    }
-    .iconlink{
-      bottom: 50px;
-      margin-right: 0px;
-    }
-    #img-path {
-      display: none;
-    }
+  #credits {
+    font-size: 12px;
+    position: absolute;
+    bottom: -25px;
+    right: 15px;
+    color: #ffffff;
+    max-width: 70%;
+    text-align: right;
+    line-height: 20px;
+  }
+  .logo {
+    font-size: 12px;
+    position: absolute;
+    bottom: 80px;
+    left: 25px;
+    color: #ffffff;
+    max-width: 70%;
+    line-height: 20px;
+    opacity: 0.7;
+  }
+  .social{
+    opacity: 0.7;
+  }
+  .iconlink{
+    bottom: 50px;
+    margin-right: 0px;
+  }
+  #img-path {
+    display: none;
+  }
 
-  </style>
-  <script>
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "https://hm.baidu.com/hm.js?44f8fa2f0b239ea3093628142486b48a";
-      var s = document.getElementsByTagName("script")[0]; 
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
-  
+</style>
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?44f8fa2f0b239ea3093628142486b48a";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
 </head>
 <body>
 
@@ -90,58 +88,50 @@
 
 <script type="text/javascript">
 
-  var type;
+  var type = 'text';
   var options ={ 
     BgColor : '#0a0a0a',
     ColorMode: 'Random',
     Color1 : '#00c2ff',
     Color2 : '#094293', 
     Color3 : '#eefdff', 
-
-    Nums : 5,
+    Nums : 1,
     BigSize : 8,
-    SmallSize: 3,
+    SmallSize: 2,
     noiseScale: 1000,
     Image_DataURL :'',
     Text : "STAR",
     TextSize: 400,
-    // 'Upload Image': function(){
-    //     // you need to create an input element in HTML, explained later
-    //     var input = document.getElementById('img-path');
-    //     input.addEventListener('change', function() {
-    //       var file = input.files[0];
-    //       r = new FileReader();
-    //       r.onload = function (){
-    //        gui['Image_DataURL'] = r.result;
-    //        console.log(r.result)
-    //        p5LoadImage(r.result);
+    'Upload Image': function(){
+        // you need to create an input element in HTML, explained later
+        var input = document.getElementById('img-path');
+        input.addEventListener('change', function() {
+          var file = input.files[0];
+          r = new FileReader();
+          r.onload = function (){
+           gui['Image_DataURL'] = r.result;
+           console.log(r.result)
+           p5LoadImage(r.result);
+           type ='image'; 
+         }
+         r.readAsDataURL(file);
 
-    //        type ='image'; 
-    //        //draw();
-    //      }
-    //      r.readAsDataURL(file);
+         for (var i in gui.__controllers) {
+          gui.__controllers[i].updateDisplay();
+        }
+      });
+        input.click();   
+         setup(); 
 
-    //      for (var i in gui.__controllers) {
-    //       gui.__controllers[i].updateDisplay();
-    //     }
-    //   });
-    //     input.click();       
-    //   },
-    isPNG: false,
-
-
-    Save : function(){
-      saveFrames("image", "png", 1, 1);
-    },
-  }
+      },
+      isPNG: false,
 
 
-//upload image
-var GuiConfig = function() {
-    this['Image Path'] = 'image/a.png';  // default image path
-    this['UploadImage'] = function() {
-    };
-  };
+      Save : function(){
+        saveFrames("image", "png", 1, 1);
+      },
+    }
+
 
 
   var f;
@@ -158,11 +148,10 @@ var GuiConfig = function() {
   bgcolorControl.onChange(setup);
 
   colorModeControl = folder1.add(options, 'ColorMode',['Random','Gradient']);
- colorModeControl.onChange(draw);
+  colorModeControl.onChange(draw);
 
   color1Control = folder1.addColor(options, 'Color1');
   color1Control.onChange(draw);
-
 
   color2Control = folder1.addColor(options, 'Color2');
   color2Control.onChange(draw);
@@ -170,34 +159,16 @@ var GuiConfig = function() {
   color3Control = folder1.addColor(options, 'Color3');
   color3Control.onChange(draw);
 
-
   textControl = folder1.add(options, 'Text'); 
-  
-  var s ;
-  f = frameCount;
-
-
-
   textControl.onChange(function(){
-    s = frameCount-f;
-    print(s);
-    if(s > 200){
-      setup();
-    }else{
-      fill(0);
-      rect(0,0,window.innerWidth,window.innerHeight);
-      fill(255);
-      textSize(20);
-      textAlign(CENTER);
-      text("loading……",window.innerWidth/2,window.innerHeight/2);
-    }
+    type ='text';
+    setup();
   });
 
 
   TextSizeControl = folder1.add(options, 'TextSize',300,600);
   TextSizeControl.onChange(function(){
     setup();
-    
   });
 
   NumsControl = folder1.add(options, 'Nums',1,9);
@@ -213,16 +184,26 @@ var GuiConfig = function() {
   noiseScaleControl = folder1.add(options, 'noiseScale',100,2000);
   noiseScaleControl.onChange(draw);
 
-  // var UploadImg = folder1.add(options, 'Upload Image');
+
+  var UploadImg = folder1.add(options, 'Upload Image');
+  UploadImg.onChange(function(){
+    setup();
+  });
+
+
   var SaveControl = folder1.add(options, 'Save');
   folder1.open();
 };
+
+
+
 
 //rgb to hex颜色转换
 function componentToHex(c) {
   var hex = c.toString(16);
   return hex.length == 1 ? "0" + hex : hex;
 }
+
 
 function rgbToHex(r, g, b) {
   return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);

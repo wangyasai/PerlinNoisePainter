@@ -26,10 +26,8 @@ var px2_ = [];
 var py2_ = [];
 
 var smallcounts;
-var sum = 0;
-var sum_ = 0;
-var sum2  = 0;
-var sum2_ = 0;
+
+var sum  = 0;
 let gp1,gp2,gp1_;
 let w, h ;
 var loc,red,green,blue,c,value;
@@ -42,11 +40,6 @@ var bg;
 
 function p5LoadImage(dataURL){
   img = loadImage(dataURL);
-  console.log(img);
-  setTimeout(function(){
-    resetSketch();
-  },500);
-  
 }
 
 
@@ -79,15 +72,23 @@ function setup() {
   gp1_.pixelDensity(pixelDensity());
   var n = map(w,300,2000,0,170);
 
+  if(type == 'text'){
+    gp1.background(0);
+    gp1.fill(255);
+    gp1.stroke(255);
+    gp1.textSize(options.TextSize);
+    gp1.strokeWeight(20); 
+    gp1.textAlign(CENTER,CENTER);
+    gp1.text(options.Text,w/2, h/2);
+  }
 
-  gp1.background(0);
-  gp1.fill(255);
-  gp1.stroke(255);
-  gp1.textSize(options.TextSize);
-  gp1.strokeWeight(20); 
-  gp1.textAlign(CENTER,CENTER);
-  gp1.text(options.Text,w/2, h/2);
+  if(type == 'image'){
+   gp1.imageMode(CENTER);
+   gp1.image(img, w/2, h/2, image.width, image.height);
+ }
 
+
+ if(type == 'text'){
   gp1_.background(0);
   gp1_.fill(255);
   gp1_.stroke(255);
@@ -95,37 +96,47 @@ function setup() {
   gp1_.strokeWeight(120); 
   gp1_.textAlign(CENTER,CENTER);
   gp1_.text(options.Text,w/2, h/2);
+}
+
+if(type == 'image'){
+  push();
+  gp1_.imageMode(CENTER);
+  gp1_.image(img, w/2, h/2 , img.width*1.35, img.height*1.35);
+  pop();
+  print('test');
+}
 
 
-  gp1_.loadPixels();
+gp1_.loadPixels();
 
-  bg = hexToRgb(options.BgColor);
-  var space = 10;
-  for(var y = 0 ; y < h; y+=space){
-    for(var x= 0; x< w; x+=space){
-      loc = (x + y * w)*4;
-      red =  gp1_.pixels[loc];
-      green =  gp1_.pixels[loc+1];
-      blue = gp1_.pixels[loc+2];
-      c = color(red, green, blue);
-      value = brightness(c);
-      if(value == 0){
-        gp2.fill(bg.r,bg.g,bg.b);
-        gp2.noStroke();
-        gp2.rect(x,y,space,space);
-      }
+bg = hexToRgb(options.BgColor);
+var space = 10;
+for(var y = 0 ; y < h; y+=space){
+  for(var x= 0; x< w; x+=space){
+    loc = (x + y * w)*4;
+    red =  gp1_.pixels[loc];
+    green =  gp1_.pixels[loc+1];
+    blue = gp1_.pixels[loc+2];
+    c = color(red, green, blue);
+    value = brightness(c);
+    if(value == 0){
+      gp2.fill(bg.r,bg.g,bg.b);
+      gp2.noStroke();
+      gp2.rectMode(CENTER);
+      gp2.rect(x,y,space,space);
     }
   }
-  gp1_.updatePixels();
-  resetSketch();
+}
+gp1_.updatePixels();
+resetSketch();
 }
 
 function resetSketch(){
   gp1.loadPixels();
-  sum2 = 0;
+  sum = 0;
+
   imageMode(CENTER);
   for(var i = 0 ; i < nums; i++){
-
     smallParticles[i] = new Particle(random(width),random(height),options.SmallSize,gp1);
   }
 
@@ -133,13 +144,22 @@ function resetSketch(){
   for(var y = 0; y < h; y+=4){
     for(var x = 0 ; x < w; x+=4){
       index2 = int((y*w+x))*4;
-      if(brightness(gp1.pixels[index2]) == 100){  
-        px2[sum2] = x;
-        py2[sum2] = y;      
-        bigParticles1[sum2] = new Particle(px2[sum2]+random(-5,5),py2[sum2]+random(-5,5),options.BigSize +random(10),gp1);
-        randomColor[sum2] = random(0,1);
-        sum2 ++;
+      var bright = int(brightness(gp1.pixels[index2])) ;
+
+      if( bright !=0 ){  
+        px2[sum] = x;
+        py2[sum] = y;      
+        bigParticles1[sum] = new Particle(px2[sum]+random(-5,5),py2[sum]+random(-5,5),options.BigSize +random(10),gp1);
+        randomColor[sum] = random(0,1);
+        sum ++;
       }
+      //  if(type == 'image'){
+      //   px2[sum] = x;
+      //   py2[sum] = y;      
+      //   bigParticles1[sum] = new Particle(px2[sum]+random(-5,5),py2[sum]+random(-5,5),options.BigSize +random(10),gp1);
+      //   randomColor[sum] = random(0,1);
+      //   sum ++;
+      // }
     }  
   }
   gp1.updatePixels();
@@ -148,10 +168,10 @@ function resetSketch(){
 
 
 function draw() {
-
+  // console.log(type);
   background(bg.r,bg.g,bg.b, 30);
   var counts = int(30 - int(options.Nums)*3);
-  for (var i = 0; i < sum2; i+=counts) { 
+  for (var i = 0; i < sum; i+=counts) { 
     if(options.ColorMode == 'Random'){
       if(randomColor[i]>0.55){
         fill(options.Color1);
@@ -161,13 +181,13 @@ function draw() {
         fill(options.Color3);
       }
     }else{
-      if(i<sum2/2){
-        var percent = norm(i,0,sum2/2);
+      if(i<sum/2){
+        var percent = norm(i,0,sum/2);
         var from = color(options.Color1);
         var to = color(options.Color2);
         var between = lerpColor(from, to, percent);
       }else{
-        var percent = norm(i,sum2/2,sum2);
+        var percent = norm(i,sum/2,sum);
         var from = color(options.Color2);
         var to = color(options.Color3);
         var between = lerpColor(from, to, percent);
@@ -181,7 +201,6 @@ function draw() {
     bigParticles1[i].move();
     bigParticles1[i].checkEdges();
     bigParticles1[i].display(options.BigSize);
-
   }
 
   mask();
@@ -199,20 +218,26 @@ function draw() {
     smallParticles[i].checkEdges2();
     smallParticles[i].display(options.SmallSize);
   }
-
-
 }
 
 
 function mask(){
-  push();
-  translate(w/2,h/2);
-  image(gp2,0,0);
-  pop();
+  if(type == 'text'){
+    gp2.loadPixels();
+    push();
+    translate(w/2,h/2);
+    image(gp2,0,0);
+    pop();
+    gp2.updatePixels();
+  } else{
+    fill(options.BgColor);
+    rectMode(CORNER);
+    rect(0,0,(width-img.width)/2-40,height);
+    rect(width-(width-img.width)/2 + 40,0,(width-img.width)/2,height);
+    rect(0,0,width,(height-img.height)/2 - 40);
+    rect(0,height-(height-img.height)/2,width,(height-img.height)/2 +40);
+  }
 }
-
-
-
 
 
 function Particle(x, y, r,img) {
@@ -237,7 +262,7 @@ function Particle(x, y, r,img) {
     }
 
     this.checkEdges = function() {    
-     if((gp1.pixels[int((this.loc.x+this.loc.y*gp1.width))*4]) !=255 && dist(this.loc.x, this.loc.y, x, y ) > 40 ){
+     if((gp1.pixels[int((this.loc.x+this.loc.y*gp1.width))*4]) != 100 && dist(this.loc.x, this.loc.y, x, y ) > 35 ){
        this.loc.x = x+random(-2,2);
        this.loc.y = y+random(-2,2);
      }else if(brightness(gp1.pixels[int((this.loc.x+this.loc.y*gp1.width))*4]) == 100){

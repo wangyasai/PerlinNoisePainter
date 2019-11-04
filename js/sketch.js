@@ -38,6 +38,7 @@ var c1 = [];
 var cc = [];
 var bg;
 var index = 0;
+var between;
 
 function p5LoadImage(dataURL){
   img = loadImage(dataURL);
@@ -187,7 +188,7 @@ function resetSketch(){
         if( gp1.pixels[index+3] != 0 ){
           px2[sum] = x;
           py2[sum] = y;      
-          bigParticles1[sum] = new Particle(px2[sum]+random(-5,5),py2[sum]+random(-5,5),options.BigSize +random(10),gp1);
+          bigParticles1[sum] = new Particle(px2[sum]+random(-5,5),py2[sum]+random(-5,5),options.BigSize +random(10),gp1,i);
           randomColor[sum] = random(0,1);
           sum ++;
         }  
@@ -200,54 +201,23 @@ function resetSketch(){
 
 function draw() {
   background(bg.r,bg.g,bg.b, 30);
-
+  var alpha1,alpha2,alpha3 = 0;
   var counts = int(30 - int(options.Nums)*3);
+  alpha += (255- alpha)*0.05;
   for (var i = 0; i < sum; i+=counts) { 
-    if(options.ColorMode == 'Random'){
-      if(randomColor[i]>0.55){
-        fill(options.Color1);
-      }else if(randomColor[i]<=0.55 && randomColor[i]>=0.2){
-        fill(options.Color2);
-      }else{
-        fill(options.Color3);
-      }
-    }else{
-      if(i<sum/2){
-        var percent = norm(i,0,sum/2);
-        var from = color(options.Color1);
-        var to = color(options.Color2);
-        var between = lerpColor(from, to, percent);
-      }else{
-        var percent = norm(i,sum/2,sum);
-        var from = color(options.Color2);
-        var to = color(options.Color3);
-        var between = lerpColor(from, to, percent);
-      }
-      fill(between);
-
-    }
-
-    noStroke();
+  
     bigParticles1[i].move();
     bigParticles1[i].checkEdges();
-    bigParticles1[i].display(options.BigSize);
+    bigParticles1[i].display(options.BigSize,i);
   }
 
 
   mask();
 
   for (var i = 0; i < 300; i++) {
-    if(randomColor[i]>0.55){
-      fill(options.Color1);
-    }else if(randomColor[i]<=0.55 && randomColor[i]>=0.2){
-      fill(options.Color2);
-    }
-    else{
-      fill(options.Color3);
-    }
     smallParticles[i].move();
     smallParticles[i].checkEdges2();
-    smallParticles[i].display(options.SmallSize);
+    smallParticles[i].display(options.SmallSize,i);
   }
 }
 
@@ -271,7 +241,7 @@ function mask(){
 }
 
 
-function Particle(x, y, r,img) {
+function Particle(x, y, r,img,i) {
   this.loc = new p5.Vector(x, y);
   this.vel = new p5.Vector(0, 0);
   this.dir = new p5.Vector(0, 0);
@@ -281,6 +251,9 @@ function Particle(x, y, r,img) {
     this.checkEdges();
     this.update(r);
   }
+  this.alpha = -10;
+  this.randomColor = random(1);
+  this.i = i;
 
   this.move = function() {
       //noise 影响angle的变化，从而影响dir和loc，noise(x,y,z);
@@ -293,9 +266,10 @@ function Particle(x, y, r,img) {
     }
 
     this.checkEdges = function() {    
-     if((gp1.pixels[int((this.loc.x+this.loc.y*gp1.width))*4 + 3]) == 0 && dist(this.loc.x, this.loc.y, x, y ) > 35 ){
+     if((gp1.pixels[int((this.loc.x + this.loc.y*gp1.width))*4 + 3]) == 0 && dist(this.loc.x, this.loc.y, x, y ) > 35 ){
        this.loc.x = x+random(-2,2);
        this.loc.y = y+random(-2,2);
+       this.alpha = 0;
      }
   }
 
@@ -311,12 +285,37 @@ function Particle(x, y, r,img) {
  }
 
 
- this.display = function(r) {
-  if(r==options.BigSize){
-    var psize = map(dist(this.loc.x, this.loc.y, x, y ),0,40,r/1.5,r); 
-  }else{
-    var psize = r;
-  }  
-  ellipse(this.loc.x, this.loc.y, psize, psize);
-}
+ this.display = function(r,i) {
+  this.alpha += (255-this.alpha)*0.05;
+
+  if(options.ColorMode == 'Random'){
+      if(this.randomColor>0.55){
+        var color1 = hexToRgb(options.Color1);
+        fill(color1.r, color1.g, color1.b, this.alpha);
+      }else if(this.randomColor<=0.55 && this.randomColor>=0.2){
+        var color2 = hexToRgb(options.Color2);
+        fill(color2.r, color2.g, color2.b,this.alpha);
+      }else{
+        var color3 = hexToRgb(options.Color3);
+        fill(color3.r, color3.g, color3.b, this.alpha);
+      }
+  }else if(options.ColorMode == 'Gradient'){
+      if(i < sum/2){
+        var percent = norm(i,0,sum/2);
+        var from = color(options.Color1);
+        var to = color(options.Color2);
+        between = lerpColor(from, to, percent);
+        fill(between.levels[0], between.levels[1], between.levels[2], this.alpha);
+      }else{
+        var percent = norm(i,sum/2,sum);
+        var from = color(options.Color2);
+        var to = color(options.Color3);
+        between = lerpColor(from, to, percent);
+        fill(between.levels[0], between.levels[1], between.levels[2], this.alpha);
+      }
+    }
+    noStroke();
+
+    ellipse(this.loc.x, this.loc.y, r,r);
+  }
 }

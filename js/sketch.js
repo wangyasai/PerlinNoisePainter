@@ -37,9 +37,13 @@ var color1;
 var c1 = [];
 var cc = [];
 var bg;
+var index = 0;
 
 function p5LoadImage(dataURL){
   img = loadImage(dataURL);
+   setTimeout(function(){
+    setup();     
+  },50);   
 }
 
 
@@ -59,6 +63,7 @@ function setup() {
   w = windowWidth;
   h = windowHeight;
 
+
   myCanvas = createCanvas(w,h);
 
   gp1 = createGraphics(w,h);
@@ -72,8 +77,9 @@ function setup() {
   gp1_.pixelDensity(pixelDensity());
   var n = map(w,300,2000,0,170);
 
+
+  //draw text / image on PGraphic
   if(type == 'text'){
-    gp1.background(0);
     gp1.fill(255);
     gp1.stroke(255);
     gp1.textSize(options.TextSize);
@@ -82,14 +88,33 @@ function setup() {
     gp1.text(options.Text,w/2, h/2);
   }
 
+
   if(type == 'image'){
+    push();
+    var scale = 0.8;
+    var imgW,imgH;
+     if(img.height > height && img.width > width && img.height && img.width/width > img.height/height){
+        imgW = width*scale;
+        imgH = img.height * width * scale /img.width;
+     }else if(img.height > height && img.width > width && img.height && img.width/width < img.height/height){
+        imgH = height*scale;
+        imgW= img.width * height * scale /img.height;  
+    }else if(img.height > height && img.width < width){
+        imgH= height*scale;
+        imgW= img.width * height *scale / img.height; 
+     }else if(img.height < height && img.width > width){
+        imgW = width * scale;
+        imgH= img.height * width *scale / img.width;  
+     }
    gp1.imageMode(CENTER);
-   gp1.image(img, w/2, h/2, image.width, image.height);
+   gp1.image(img, w/2, h/2, imgW,imgH);
+   pop();
  }
 
+resetSketch();
 
+//draw mask scale
  if(type == 'text'){
-  gp1_.background(0);
   gp1_.fill(255);
   gp1_.stroke(255);
   gp1_.textSize(options.TextSize);
@@ -98,17 +123,32 @@ function setup() {
   gp1_.text(options.Text,w/2, h/2);
 }
 
+
 if(type == 'image'){
   push();
+   var scale = 0.8;
+     var imgW,imgH;
+     if(img.height > height && img.width > width && img.height && img.width/width > img.height/height){
+        imgW = width*scale;
+        imgH = img.height * width * scale /img.width;
+     }else if(img.height > height && img.width > width && img.height && img.width/width < img.height/height){
+        imgH = height*scale;
+        imgW= img.width * height * scale /img.height; 
+     }else if(img.height > height && img.width < width){
+        imgH= height*scale;
+        imgW= img.width * height *scale / img.height; 
+      }else if(img.height < height && img.width > width){
+        imgW = width * scale;
+        imgH= img.height * width *scale / img.width;  
+       }
   gp1_.imageMode(CENTER);
-  gp1_.image(img, w/2, h/2 , img.width*1.35, img.height*1.35);
+  gp1_.image(img, w/2, h/2 , imgW*1.1, imgH*1.1);
   pop();
-  print('test');
 }
 
 
+//get mask
 gp1_.loadPixels();
-
 bg = hexToRgb(options.BgColor);
 var space = 10;
 for(var y = 0 ; y < h; y+=space){
@@ -128,8 +168,9 @@ for(var y = 0 ; y < h; y+=space){
   }
 }
 gp1_.updatePixels();
-resetSketch();
 }
+
+
 
 function resetSketch(){
   gp1.loadPixels();
@@ -140,36 +181,26 @@ function resetSketch(){
     smallParticles[i] = new Particle(random(width),random(height),options.SmallSize,gp1);
   }
 
-
-  for(var y = 0; y < h; y+=4){
-    for(var x = 0 ; x < w; x+=4){
-      index2 = int((y*w+x))*4;
-      var bright = int(brightness(gp1.pixels[index2])) ;
-
-      if( bright !=0 ){  
-        px2[sum] = x;
-        py2[sum] = y;      
-        bigParticles1[sum] = new Particle(px2[sum]+random(-5,5),py2[sum]+random(-5,5),options.BigSize +random(10),gp1);
-        randomColor[sum] = random(0,1);
-        sum ++;
+  for(var y = 0; y < gp1.height; y+=4){
+    for(var x = 0 ; x < gp1.width; x+=4){
+      index = int((y*gp1.width+x))*4;
+        if( gp1.pixels[index+3] != 0 ){
+          px2[sum] = x;
+          py2[sum] = y;      
+          bigParticles1[sum] = new Particle(px2[sum]+random(-5,5),py2[sum]+random(-5,5),options.BigSize +random(10),gp1);
+          randomColor[sum] = random(0,1);
+          sum ++;
+        }  
       }
-      //  if(type == 'image'){
-      //   px2[sum] = x;
-      //   py2[sum] = y;      
-      //   bigParticles1[sum] = new Particle(px2[sum]+random(-5,5),py2[sum]+random(-5,5),options.BigSize +random(10),gp1);
-      //   randomColor[sum] = random(0,1);
-      //   sum ++;
-      // }
-    }  
-  }
+    }
   gp1.updatePixels();
 }
 
 
 
 function draw() {
-  // console.log(type);
   background(bg.r,bg.g,bg.b, 30);
+
   var counts = int(30 - int(options.Nums)*3);
   for (var i = 0; i < sum; i+=counts) { 
     if(options.ColorMode == 'Random'){
@@ -192,16 +223,16 @@ function draw() {
         var to = color(options.Color3);
         var between = lerpColor(from, to, percent);
       }
-
       fill(between);
+
     }
 
-
-    noStroke(0);
+    noStroke();
     bigParticles1[i].move();
     bigParticles1[i].checkEdges();
     bigParticles1[i].display(options.BigSize);
   }
+
 
   mask();
 
@@ -262,15 +293,10 @@ function Particle(x, y, r,img) {
     }
 
     this.checkEdges = function() {    
-     if((gp1.pixels[int((this.loc.x+this.loc.y*gp1.width))*4]) != 100 && dist(this.loc.x, this.loc.y, x, y ) > 35 ){
+     if((gp1.pixels[int((this.loc.x+this.loc.y*gp1.width))*4 + 3]) == 0 && dist(this.loc.x, this.loc.y, x, y ) > 35 ){
        this.loc.x = x+random(-2,2);
        this.loc.y = y+random(-2,2);
-     }else if(brightness(gp1.pixels[int((this.loc.x+this.loc.y*gp1.width))*4]) == 100){
-      if(this.loc.x < 0 || this.loc.x > gp1.width || this.loc.y <0 || this.loc.y >gp1.height ){
-        this.loc.x = x+random(-2,2);
-        this.loc.y = y+random(-2,2);
-      }
-    }
+     }
   }
 
 

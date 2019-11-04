@@ -8,6 +8,8 @@
   <meta name="keywords" content="">
   <link href="" rel="stylesheet">
 
+
+
   <link rel="icon" href="image/1.ico" type="image/x-icon">
   <link rel="shortcut icon" href="image/1.ico" type="image/x-icon">
 
@@ -25,7 +27,7 @@
     margin:0;
     padding:0;
   }
-
+  
 
   #credits {
     font-size: 12px;
@@ -102,7 +104,7 @@
     Image_DataURL :'',
     Text : "STAR",
     TextSize: 400,
-    'Upload Image': function(){
+       'Upload Image': function(){
         // you need to create an input element in HTML, explained later
         var input = document.getElementById('img-path');
         input.addEventListener('change', function() {
@@ -110,9 +112,9 @@
           r = new FileReader();
           r.onload = function (){
            gui['Image_DataURL'] = r.result;
-           console.log(r.result)
            p5LoadImage(r.result);
-           type ='image'; 
+           type='image';
+           setup();
          }
          r.readAsDataURL(file);
 
@@ -120,11 +122,8 @@
           gui.__controllers[i].updateDisplay();
         }
       });
-        input.click();   
-         setup(); 
-
+        input.click();
       },
-      isPNG: false,
 
 
       Save : function(){
@@ -136,7 +135,7 @@
 
   var f;
 
-  var text, gui, config,bgcolorControl,colorControl,color1Control,color2Control,color3Control,BigSizeControl,SmallSizeControl,graphicControl,noiseControl,noiseScaleControl,DistanceControl,textControl, colorModeControl;
+  var text, gui, config,bgcolorControl,colorControl,color1Control,color2Control,color3Control,BigSizeControl,SmallSizeControl,graphicControl,noiseControl,noiseScaleControl,DistanceControl,textControl, colorModeControl,uploadImgControl;
   window.onload = function() {
     gui = new dat.GUI();
 
@@ -152,6 +151,7 @@
 
   color1Control = folder1.addColor(options, 'Color1');
   color1Control.onChange(draw);
+
 
   color2Control = folder1.addColor(options, 'Color2');
   color2Control.onChange(draw);
@@ -185,8 +185,8 @@
   noiseScaleControl.onChange(draw);
 
 
-  var UploadImg = folder1.add(options, 'Upload Image');
-  UploadImg.onChange(function(){
+  uploadImgControl = folder1.add(options, 'Upload Image');
+  uploadImgControl.onChange(function(){
     setup();
   });
 
@@ -194,8 +194,6 @@
   var SaveControl = folder1.add(options, 'Save');
   folder1.open();
 };
-
-
 
 
 //rgb to hex颜色转换
@@ -213,10 +211,7 @@ function rgbToHex(r, g, b) {
 
 
 </script>
-
 <script type="text/javascript" src="js/sketch.js"></script>
-
 </body>
-
 </html>
 
